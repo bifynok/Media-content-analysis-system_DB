@@ -9,20 +9,13 @@
 *Модель прецедентів повинна містити загальні оглядові діаграми та специфікації прецедентів.*
 
 
-<center style="
-    border-radius:4px;
-    border: 1px solid #cfd7e6;
-    box-shadow: 0 1px 3px 0 rgba(89,105,129,.05), 0 1px 1px 0 rgba(0,0,0,.025);
-    padding: 1em;">
-
-
 
 @startuml
 
   actor "Гість" is as Guest
 
-  usecase "<b>Log in</b>/n" as UC_1
-  usecase "<b>Sign in</b>/n" as UC_2
+  usecase "<b>Log in</b>/nзареєстувати обліковий запис" as UC_1
+  usecase "<b>Sign in</b>/nувійти в обліковий запис" as UC_2
 
   Guest -d-> UC_1
   Guest -d-> UC_2
