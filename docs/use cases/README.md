@@ -14,4 +14,12 @@
 
 @startuml
 
+  actor "" is as Guest
+
+  usecase "<b>Log in</b>" as UC_1
+  usecase "<b>Sign in</b>" as UC_2
+
+  Guest -d-> UC_1
+  Guest -d-> UC_2
+
 @enduml
