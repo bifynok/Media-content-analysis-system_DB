@@ -14,7 +14,7 @@
 
 @startuml
 
-  actor "" is as Guest
+  actor "Гість" is as Guest
 
   usecase "<b>Log in</b>/n" as UC_1
   usecase "<b>Sign in</b>/n" as UC_2
