@@ -9,85 +9,49 @@
     
 @startuml
 
-    right header
-        <font size=24 color=black>Package: <b>UCD_3.0
-    end header
+    actor "Адміністратор" as Administrator
+    actor "Редактор" as Editor
+    actor "Користувач" as User
+    actor "Гість" as Guest
+
+
+    usecase "<b>Data Review</b>\nПеревірка даних, запропонованих\nредактором для публікації" as UC_8
+    usecase "<b>Block User</b>\nБлокування користувача" as UC_9
+    usecase "<b>Grant Edit Permission</b>\nНадання прав" as UC_10
+
+
+
+    usecase  "<b>Update Data</b>\nОновлення існуючих даних на сайті" as UC_3
+    usecase "<b>Delete Data</b>\nВидалення даних з сайту" as UC_4
+    usecase "<b>Upload Data</b>\nЗавантаження даних на сайт" as UC_6 
+
+
+
+    usecase "<b>User Delete</b>\nВидалення облікового запису користувача" as UC_1
+    usecase "<b>User Get Info</b>\nОтримання інформації про\nзгадки користувачем" as UC_2
+
+    usecase "<b>Sign Up</b>\nЗареєстувати обліковий запис" as LOG_IN
+    usecase "<b>Log In</b>\nУвійти в обліковий запис" as SIGN_IN
+
+
+    Administrator -d-> Editor
+    Editor -r-> User
+    User -u-> Guest
     
-    title
-        <font size=18 color=black>Діаграма прецедентів
-    end title
+    Administrator -l-> UC_8
+    Administrator -u-> UC_9
+    Administrator -u-> UC_10
     
-    actor "Адміністратор" as Administrator #aaaaaa
-    actor "Редактор" as Editor #ddddaa
-    actor "Користувач" as User #eeeeaa
-    actor "Гість" as Guest #eeeeee
+    Editor -d-> UC_3
+    Editor -d-> UC_4
+    Editor -l-> UC_6
     
-    package UCD_Admin {
-        usecase "<b>Data Review</b>\nПеревірка даних, запропонованих\nредактором для публікації" as UC_8 #aaaaaa
-        usecase "<b>Block User</b>\nБлокування користувача" as UC_9 #aaaaaa
-        usecase "<b>Grant Edit Permission</b>\nНадання прав" as UC_10 #aaaaaa
-    }
+    User -d-> UC_1
+    User -r-> UC_2
     
-    package UCD_Editor {
-        usecase  "<b>Update Data</b>\nОновлення існуючих даних на сайті" as UC_3 #ddddaa
-        usecase "<b>Delete Data</b>\nВидалення даних з сайту" as UC_4 #ddddaa
-        usecase "<b>Upload Data</b>\nЗавантаження даних на сайт" as UC_6 #ddddaa
-    }
-    
-    package UCD_User {
-        usecase "<b>User Delete</b>\nВидалення облікового запису користувача" as UC_1 #eeeeaa
-        usecase "<b>UC_1</b>\nПереглянути список \nзвітів" as UC_1.1 #eeeeaa
-        usecase "<b>UC_4</b>\nВикликати звіт" as UC_4.0 #aaeeaa
-    }
-    
-    usecase "<b>UC_1.1</b>\nЗастосувати фільтр" as UC_1.1.0
-    usecase "<b>UC_1.1.1</b>\n Використати \nпошукові теги" as UC_1.1.1  
-    usecase "<b>UC_1.1.2</b>\n Використати \nрядок пошуку" as UC_1.1.2
-    usecase "<b>UC_1.1.3</b>\n Використати \nавторів" as UC_1.1.3  
-    usecase "<b>UC_1.2.2</b>\nПереглянути інформацію \nпро авторів звіту" as UC_1.2.2
-    usecase "<b>UC_1.2</b>\nПереглянути метадані \nзвіту" as UC_1.2 
-    usecase "<b>UC_1.2.1</b>\nДати оцінку звіту" as UC_1.2.1 
-    
-    package UCD_Guest {
-        usecase "<b>Sigh Up</b>\nзареєстувати обліковий запис" as LOG_IN #eeeeee
-        usecase "<b>Log In</b>\nувійти в обліковий запис" as SIGN_IN #eeeeee
-    }
-    
-    Administrator -> UC_8
-    Administrator -> UC_9
-    Administrator -> UC_10
-    
-    Administrator -down-> Editor
-    
-    Editor -> UC_3
-    Editor -> UC_4
-    Editor -> UC_6
-    
-    Editor -down-> User
-    
-    User -> UC_1
-    User -> UC_1.1
-    User -down-> Guest
-    UC_1.1.0 .u.> UC_1.1 :extends
-    UC_1.1.1 -u-|> UC_1.1.0
-    UC_1.1.2 -u-|> UC_1.1.0
-    UC_1.1.3 -u-|> UC_1.1.0
-    UC_1.1 ..> UC_1.2.2 :extends
-    UC_1.2.2 .u.> UC_1.2 :extends
-    UC_1.2.1 .u.> UC_1.2 :extends
-    UC_4.0 .d.> UC_1.2 :extends
-    UC_1.2 .> UC_1.2 :extends
-    UC_1.2 .u.> UC_1.1 :extends
-    
-    
-    Guest -> LOG_IN
-    Guest -> SIGN_IN
-    
-    right footer
-        Аналітичний портал. Модель прецедентів.
-        НТУУ КПІ ім.І.Сікорського
-        Киів-2020
-    end footer
+    Guest -r-> LOG_IN
+    Guest -u-> SIGN_IN
+
 @enduml
 
 **Діаграма прецедентів**
@@ -125,14 +89,15 @@
 >
 @startuml
 
-    actor "Користувач" as User #eeeeaa
+    actor "Користувач" as User
     
-    usecase "<b>User Delete</b>\nВидалення облікового запису користувача" as UC_1 #eeeeaa
-    usecase "<b>UC_1</b>\nПереглянути список \nзвітів" as UC_1.1 #eeeeaa
-    usecase "<b>UC_4</b>\nВикликати звіт" as UC_4.0 #aaeeaa    
+    usecase "<b>User Delete</b>\nВидалення облікового запису користувача" as UC_1
+    usecase "<b>UC_1</b>\nПереглянути список \nзвітів" as UC_1.1 
+    usecase "<b>UC_4</b>\nВикликати звіт" as UC_4.0    
     
     User -> UC_1
     User -> UC_1.1
+    User -> UC_4.0
 
 @enduml
 
@@ -148,11 +113,11 @@
 >
 @startuml
 
-    actor "Редактор" as Editor #ddddaa
+    actor "Редактор" as Editor 
     
-    usecase  "<b>Update Data</b>\nОновлення існуючих даних на сайті" as UC_3 #ddddaa
-    usecase "<b>Delete Data</b>\nВидалення даних з сайту" as UC_4 #ddddaa
-    usecase "<b>Upload Data</b>\nЗавантаження даних на сайт" as UC_6 #ddddaa  
+    usecase  "<b>Update Data</b>\nОновлення існуючих даних на сайті" as UC_3 
+    usecase "<b>Delete Data</b>\nВидалення даних з сайту" as UC_4 
+    usecase "<b>Upload Data</b>\nЗавантаження даних на сайт" as UC_6 
     
     Editor -> UC_3
     Editor -> UC_4
@@ -172,11 +137,11 @@
 >
 @startuml
 
-    actor "Адміністратор" as Administrator #aaaaaa
+    actor "Адміністратор" as Administrator
     
-    usecase "<b>Data Review</b>\nПеревірка даних, запропонованих\nредактором для публікації" as UC_8 #aaaaaa
-    usecase "<b>Block User</b>\nБлокування користувача" as UC_9 #aaaaaa
-    usecase "<b>Grant Edit Permission</b>\nНадання прав" as UC_10 #aaaaaa
+    usecase "<b>Data Review</b>\nПеревірка даних, запропонованих\nредактором для публікації" as UC_8
+    usecase "<b>Block User</b>\nБлокування користувача" as UC_9
+    usecase "<b>Grant Edit Permission</b>\nНадання прав" as UC_10
     
     Administrator -> UC_8
     Administrator -> UC_9
@@ -188,8 +153,8 @@
 
 </center>
 
-6.  ## Сценарії використання для незареєстрованого користувача (гостя)
-   ### Сценарій авторизації користувача
+## 6. Сценарії використання для незареєстрованого користувача (гостя)
+### Сценарій авторизації користувача
 | ID:                | USER_LOGIN|
 |-|-|
 | **НАЗВА**:             | Авторизація користувача в обліковий запис|
@@ -223,8 +188,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-7. ### Сценарій реєстрації у системі
+### Сценарій реєстрації у системі
 | **ID:**                | USER_REGISTRATION|
 |-|-|
 | **НАЗВА:**             | Створення нового облікового запису користувача|
@@ -259,9 +225,10 @@ start;
 stop
 
 @enduml
+<br></br>
 
-8. ## Сценарії використання для зареєстрованого користувача
- ### Сценарій видалення облікового запису користувача
+## 7. Сценарії використання для зареєстрованого користувача
+### Сценарій видалення облікового запису користувача
 | ID:                | USER_DELETE|
 |-|-|
 | **НАЗВА**:             | Видалення облікового запису користувача|
@@ -296,8 +263,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-9. ## Сценарії отримання інформації про згадки користувачем
+### Сценарії отримання інформації про згадки користувачем
 | ID:                | USER_GET_INFO|
 |-|-|
 | НАЗВА:             | Отримання інформації про згадки користувачем|
@@ -328,9 +296,10 @@ start;
 stop
 
 @enduml
+<br></br>
 
-10. ## Сценарії використання для редактора системи
-    ### Сценарій завантаження даних
+## 8. Сценарії використання для редактора системи
+### Сценарій завантаження даних
 | ID:                |EDITOR_UPLOAD_DATA|
 |-|-|
 | НАЗВА:             |Завантаження даних на сайт |
@@ -358,8 +327,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-11. ### Сценарій оновлення даних
+### Сценарій оновлення даних
 | ID:                |EDITOR_UPDATE_DATA|
 |-|-|
 | НАЗВА:             |Оновлення існуючих даних на сайті |
@@ -386,8 +356,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-12. ### Сценарій видалення даних
+### Сценарій видалення даних
 | ID:                |EDITOR_DELETE_DATA|
 |-|-|
 | НАЗВА:             |Видалення даних з сайту |
@@ -413,9 +384,10 @@ start;
 stop
 
 @enduml
+<br></br>
 
-13. ## Сценарій використання адміністратора
-    ### Сценарій блокування користувача
+## 9. Сценарій використання адміністратора
+### Сценарій блокування користувача
 | **ID:**                |ADMIN_BLOCK_USER|
 |-|-|
 | **НАЗВА:**             | Блокування користувача на сайті|
@@ -443,8 +415,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-14. ### Сценарій надання користувачу права на редагування
+### Сценарій надання користувачу права на редагування
 | **ID:**                |ADMIN_GRANT_EDIT_PERMISSION|
 |-|-|
 | **НАЗВА:**             | Надання користувачу права на редагування|
@@ -471,8 +444,9 @@ start;
 stop
 
 @enduml
+<br></br>
 
-15. ### Сценарій перевірки даних, запропонованих редактором
+### Сценарій перевірки даних, запропонованих редактором
 | **ID:**                |ADMIN_DATA_REVIEW|
 |-|-|
 | **НАЗВА:**             | Перевірка даних, запропонованих редактором для публікації |
