@@ -1,6 +1,6 @@
 # Проєктування бази даних
 
-ER-модель
+###ER-модель
 
 @startuml
 entity ResultData <<ENTITY>> {
