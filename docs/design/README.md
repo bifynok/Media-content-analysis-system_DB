@@ -127,3 +127,9 @@ User "0,*"--"1,1" Access
 Access "1,1"--"0,*" Role
 
 @enduml
+
+## Реляційна схема
+
+<p align="center">
+  <img src="./media/relational_schema.jpg" width="600">
+</p>
