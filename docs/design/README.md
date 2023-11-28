@@ -131,5 +131,5 @@ Access "1,1"--"0,*" Role
 ## Реляційна схема
 
 <p align="center">
-  <img src="./media/relational_schema.jpg" width="600">
+  <img src="./media/relational_schema.jpg" width="1200">
 </p>
