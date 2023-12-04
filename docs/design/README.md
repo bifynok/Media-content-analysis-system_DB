@@ -105,9 +105,6 @@ entity Role <<ENTITY>> {
     description: TEXT
 }
 
-entity Access <<ENTITY>> {
-    id: NUMBER
-}
 
 entity PubReview <<ENTITY>> {
     status: TEXT
@@ -123,7 +120,6 @@ User "1,1"--"0,*" PubReview
 PubRequest "1,1"--"0,*" PubReview
 User "1,1"--"0,*" PubRequest
 User "1,1"--"0,*" MentionReport
-User "0,*"--"1,1" Access
-Access "1,1"--"0,*" Role
+User "0,*"--"1,1" Role
 
 @enduml
