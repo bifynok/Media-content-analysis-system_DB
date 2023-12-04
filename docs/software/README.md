@@ -5,7 +5,7 @@
 - RESTfull сервіс для управління даними
 ## SQL-Скрипт для створення початкового наповнення бази даних
 
-``` 
+```SQL
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
