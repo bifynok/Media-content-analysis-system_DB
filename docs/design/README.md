@@ -17,11 +17,13 @@ User *-l- User.password
 entity Role #6f91c7 
 entity Role.name #d7dbb4 
 entity Role.description #d7dbb4
+entity Role.id #d7dbb4
 
 User "0,"--"1,1" Role
 
 Role *-d- Role.description 
-Role *-d- Role.name
+Role *-d- Role.name 
+Role *-d- Role.id
 
 entity MentionReport #6f91c7 
 entity MentionReport.id #b9bd9d 
