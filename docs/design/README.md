@@ -95,6 +95,7 @@ entity User <<ENTITY>> {
 }
 
 entity Role <<ENTITY>> {
+    id: NUMBER
     name: TEXT
     description: TEXT
 }
