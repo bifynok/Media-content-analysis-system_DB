@@ -161,226 +161,389 @@ COMMIT;
 ```
 
 ## RESTfull сервіс для управління даними
-## Model
-### Role
-```java
-package com.example.restapi.model;
 
-import jakarta.persistence.*;
+### app.js
 
-@Entity
-@Table(name  = "Role")
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String name;
-    private String description;
-    public Role(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-    public Role() {}
-    public Integer getId() {
-        return id;
-    }
+```javascript
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 3000;
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-}
+app.use(bodyParser.json());
+
+const db = require('./database');
+
+const router = require('./router');
+
+app.use('/api', router);
+
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Сторінка не знайдена' });
+});
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: 'Помилка на сервері' });
+});
+
+app.listen(port, () => {
+  console.log(`Сервер запущено на порту ${port}`);
+});
 ```
-## Repository
-### MySqlRepository
-```java
-package com.example.restapi.repo;
 
-import com.example.restapi.model.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
+### database.js
 
-public interface MySqlRepository extends JpaRepository<Role, Integer> { }
+```javascript
+const mysql2 = require('mysql2');
+
+const db = mysql2.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '987654321',
+    database: 'mcanalyzer',
+    insecureAuth: true
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error('Помилка підключення до бази даних: ' + err.stack);
+    return;
+  }
+  console.log('Підключено до бази даних з id ' + db.threadId);
+});
+
+module.exports = db;
 ```
-## Main Class for Spring Boot Application Launch
-```java
-package com.example.restapi;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+### router.js
+```javascript
+const express = require('express');
+const router = express.Router();
+const controllers = require('./controllers');
 
-@SpringBootApplication
-public class RestApiApplication {
+//Routes for "Roles"
+router.get('/roles', controllers.getAllRoles);
 
-    public static void main(String[] args) {
-        SpringApplication.run(RestApiApplication.class, args);
-    }
+router.get('/roles/:id', controllers.getRoleById);
 
-}
+//Routes for "User"
+router.get('/users', controllers.getAllUsers);
+
+router.get('/users/:id', controllers.getUserById);
+
+router.post('/users', controllers.createUser);
+
+router.delete('/users/:id', controllers.deleteUser);
+
+router.patch('/users/:id', controllers.updateUser);
+
+//Routes for "MetionReport"
+router.get('/mention-reports', controllers.getAllMentionReports);
+
+router.get('/mention-reports/:id', controllers.getMentionReportById);
+
+router.post('/mention-reports', controllers.createMentionReport);
+
+router.delete('/mention-reports/:id', controllers.deleteMentionReport);
+
+router.patch('/mention-reports/:id', controllers.updateMentionReport);
+
+//Routes for "PubRequests"
+router.get('/pub-requests', controllers.getAllPubRequests);
+
+router.get('/pub-requests/:id', controllers.getPubRequestById);
+
+router.post('/pub-requests', controllers.createPubRequst);
+
+router.delete('/pub-requests/:id', controllers.deletePubRequest);
+
+//Routes for "PubReview"
+router.get('/pub-reviews', controllers.getAllPubReview);
+
+router.get('/pub-reviews/:id', controllers.getPubReviewById);
+
+router.post('/pub-reviews', controllers.createPubReview);
+
+router.delete('/pub-reviews/:id', controllers.deletePubReview);
+
+router.patch('/pub-reviews/:id', controllers.updatePubReview);
+
+//Routes for "ResultsData"
+router.get('/result-data', controllers.getAllResultData);
+
+router.get('/result-data/:id', controllers.getResultDataById);
+
+router.post('/result-data', controllers.createResultData);
+
+router.delete('/result-data/:id', controllers.deleteResultData);
+
+module.exports = router;
 ```
-## Controller
-### RoleController
-```java
-package com.example.restapi.controller;
 
-import com.example.restapi.model.Role;
-import com.example.restapi.repo.MySqlRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
-import org.springframework.web.bind.annotation.*;
+### controller.js
+```javascript
+const db = require('./database');
+const bodyParser = require('body-parser');
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+//Methods for the "Roles"
+const getAllRoles = (req, res) => {
+  const query = 'SELECT * FROM Role';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-@RestController
-public class RoleController {
+const getRoleById = (req, res) => {
+  const roleId = req.params.id;
+  const query = `SELECT * FROM Role WHERE id = ${roleId}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    @Autowired
-    MySqlRepository mySqlRepository;
+//Methods for the "Users"
+const getAllUsers = (req, res) => {
+  const query = 'SELECT * FROM User';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    // GET
-    @GetMapping("/get-all-roles")
-    public List<Role> getAllRoles() {
-        return mySqlRepository.findAll();
-    }
+const getUserById = (req, res) => {
+  const userId = req.params.id;
+  const query = `SELECT * FROM User WHERE id = ${userId}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    @GetMapping("/get-role/{id}")
-    public Role getRole(@PathVariable("id") Integer id) {
-        return mySqlRepository.findById(id).get();
-    }
+const createUser = (req, res) => {
+  const newUser = req.body;
+  const query = 'INSERT INTO User SET ?';
+  db.query(query, newUser, (err, results) => {
+    if (err) throw err;
+    res.json({ id: results.insertId, ...newUser });
+  });
+};
 
-    // DELETE
-    @DeleteMapping("/remove/{id}")
-    public boolean deleteRow(@PathVariable("id") Integer id) {
-        if(!mySqlRepository.findById(id).equals(Optional.empty())) {
-            mySqlRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+const deleteUser = (req, res) => {
+  const userId = req.params.id;
+  const query = `DELETE FROM User WHERE id = ${userId}`;
+  db.query(query, (err) => {
+    if (err) throw err;
+    res.json({ id: userId, message: 'Користувач видалений успішно.' });
+  });
+};
 
-    // PUT
-    @PutMapping("/update/{id}")
-    public Role updateRole(@PathVariable("id") Integer id,
-                           @RequestBody Map<String, String> body)
-    {
-        Role current  = mySqlRepository.findById(id).get();
-        current.setName(body.get("name"));
-        current.setDescription(body.get("description"));
-        mySqlRepository.save(current);
-        return current;
-    }
+const updateUser = (req, res) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+  const query = `UPDATE User SET ? WHERE id = ${id}`;
+  db.query(query, updatedData, (err) => {
+    if (err) throw err;
+    res.json({ id: id, ...updatedData });
+  });
+};
 
-    // POST
-    @PostMapping("/add")
-    public Role create(@RequestBody Map<String, String> body)
-    {
-        String name = body.get("name");
-        String description = body.get("description");
-        Role newRole = new Role(name, description);
+//Methods for the "MentionReports"
+const getAllMentionReports = (req, res) => {
+  const query = 'SELECT * FROM MentionReport';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-        return mySqlRepository.save(newRole);
-    }
+const getMentionReportById = (req, res) => {
+  const mentionReportId = req.params.id;
+  const query = `SELECT * FROM MentionReport WHERE id = ${mentionReportId}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-}
-```
-## Error Handlers
-### ErrorResponse
-```java
-package com.example.restapi.controller.errors;
+const createMentionReport = (req, res) => {
+  const newMenRep = req.body;
+  const query = 'INSERT INTO MentionReport SET ?';
+  db.query(query, newMenRep, (err, results) => {
+    if (err) throw err;
+    res.json({ id: results.insertId, ...newMenRep });
+  });
+};
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.http.HttpStatus;
+const deleteMentionReport = (req, res) => {
+  const id = req.params.id;
+  const query = `DELETE FROM MentionReport WHERE id = ${id}`;
+  db.query(query, (err) => {
+    if (err) throw err;
+    res.json({ id: id, message: 'Звіт видалено успішно.' });
+  });
+};
 
-import java.time.LocalDateTime;
+const updateMentionReport = (req, res) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+  const query = `UPDATE MentionReport SET ? WHERE id = ${id}`;
+  db.query(query, updatedData, (err) => {
+    if (err) throw err;
+    res.json({ id: id, ...updatedData });
+  });
+};
 
-public class ErrorResponse {
-    private HttpStatus status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime timeStamp;
-    private String message;
+//Methods for the "PubRequests"
+const getAllPubRequests = (req, res) => {
+  const query = 'SELECT * FROM PubRequest';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    public ErrorResponse(HttpStatus status) {
-        this.status = status;
-    }
+const getPubRequestById = (req, res) => {
+  const id = req.params.id;
+  const query = `SELECT * FROM PubRequest WHERE User_id = ${id}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    public ErrorResponse(HttpStatus status, String message)
-    {
-        this();
-        this.status = status;
-        this.message = message;
-    }
+const createPubRequst = (req, res) => {
+  const newPubRequest = req.body;
+  const query = 'INSERT INTO PubRequest SET ?';
+  db.query(query, newPubRequest, (err, results) => {
+    if (err) throw err;
+    res.json({ id: results.insertId, ...newPubRequest });
+  });
+};
 
-    public ErrorResponse()
-    {
-        timeStamp = LocalDateTime.now();
-    }
+const deletePubRequest = (req, res) => {
+  const id = req.params.id;
+  const query = `DELETE FROM PubRequest WHERE User_id = ${id}`;
+  db.query(query, (err) => {
+    if (err) throw err;
+    res.json({ id, message: 'PubRequest видалено успішно.' });
+  });
+};
 
-    public ErrorResponse(HttpStatus status, LocalDateTime timeStamp, String message)
-    {
-        this.status = status;
-        this.timeStamp = timeStamp;
-        this.message = message;
-    }
+//Methods for the "PubReviews"
+const getAllPubReview = (req, res) => {
+  const query = 'SELECT * FROM PubReview';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+const getPubReviewById = (req, res) => {
+  const id = req.params.id;
+  const query = `SELECT * FROM PubReview WHERE User_id = ${id}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    public HttpStatus getStatus() {
-        return status;
-    }
+const createPubReview = (req, res) => {
+  const newPubReview = req.body;
+  const query = 'INSERT INTO PubReview SET ?';
+  db.query(query, newPubReview, (err, results) => {
+    if (err) throw err;
+    res.json({ id: results.insertId, ...newPubReview });
+  });
+};
 
-}
-```
-### RestExceptionHandler
-```java
-package com.example.restapi.controller.errors;
+const deletePubReview = (req, res) => {
+  const id = req.params.id;
+  const query = `DELETE FROM PubReview WHERE User_id = ${id}`;
+  db.query(query, (err) => {
+    if (err) throw err;
+    res.json({ id, message: 'PubReview видалено успішно.' });
+  });
+};
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.HttpServletBean;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+const updatePubReview = (req, res) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+  const query = `UPDATE PubReview SET ? WHERE id = ${id}`;
+  db.query(query, updatedData, (err) => {
+    if (err) throw err;
+    res.json({ id: id, ...updatedData });
+  });
+};
 
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.NoSuchElementException;
+//Methods for the "ResultData"
+const getAllResultData = (req, res) => {
+  const query = 'SELECT * FROM ResultData';
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
-@ControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+const getResultDataById = (req, res) => {
+  const id = req.params.id;
+  const query = `SELECT * FROM ResultData WHERE id = ${id}`;
+  db.query(query, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
+};
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Object> handleSqlIntegrityException(HttpServletRequest req, SQLIntegrityConstraintViolationException e) {
+const createResultData = (req, res) => {
+  const newResultData = req.body;
+  const query = 'INSERT INTO ResultData SET ?';
+  db.query(query, newResultData, (err, results) => {
+    if (err) throw err;
+    res.json({ id: results.insertId, ...newResultData });
+  });
+};
 
-        String error = "Unable to submit post: " + e.getMessage();
-        return buildResponseEntity(new ErrorResponse(HttpStatus.BAD_REQUEST, error));
-    }
+const deleteResultData = (req, res) => {
+  const id = req.params.id;
+  const query = `DELETE FROM ResultData WHERE id = ${id}`;
+  db.query(query, (err) => {
+    if (err) throw err;
+    res.json({ id, message: 'ResultData видалено успішно.' });
+  });
+};
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Object> handleNoSuchElementException(HttpServletRequest req, NoSuchElementException e)
-    {
-        ErrorResponse response = new ErrorResponse(HttpStatus.NOT_FOUND);
-        response.setMessage("The row for role doesn't exist " + req.getRequestURI());
-        return buildResponseEntity(response);
-    }
-
-    private ResponseEntity<Object> buildResponseEntity(ErrorResponse errorResponse)
-    {
-        return new ResponseEntity<Object>(errorResponse, errorResponse.getStatus());
-    }
-
-}
+module.exports = {
+  //Roles
+  getAllRoles,
+  getRoleById,
+  //Users
+  getAllUsers,
+  getUserById,
+  createUser,
+  deleteUser,
+  updateUser,
+  //MentionReports
+  getAllMentionReports,
+  getMentionReportById,
+  createMentionReport,
+  deleteMentionReport,
+  updateMentionReport,
+  //PubRequests
+  getAllPubRequests,
+  getPubRequestById,
+  createPubRequst,
+  deletePubRequest,
+  //PubReview
+  getAllPubReview,
+  getPubReviewById,
+  createPubReview,
+  deletePubReview,
+  updatePubReview,
+  //ResultData
+  getAllResultData,
+  getResultDataById,
+  createResultData,
+  deleteResultData
+};
 ```

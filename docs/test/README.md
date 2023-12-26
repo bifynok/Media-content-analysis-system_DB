@@ -1,35 +1,31 @@
 # Тестування працездатності системи
 
-Для тестування системи використовувся Postman
-
-## Role
-
-### Get All
+### GetAll
 <p>
-    <img src="./images/get-all.png">
+    <img src="./images/GetAll.png">
+</p>
+
+### GetById
+<p>
+    <img src="./images/GetById.png">
 </p>
 
 ### Post
 <p>
-    <img src="./images/post.png">
+    <img src="./images/Post.png">
 </p>
 
-### Get/{id}
+### Patch
 <p>
-    <img src="./images/get-id.png">
-</p>
-
-###  Put
-<p>
-    <img src="./images/put.png">
+    <img src="./images/Patch.png">
 </p>
 
 ### Delete
 <p>
-    <img src="./images/remove.png">
+    <img src="./images/Delete.png">
 </p>
 
-### Get All(result)
+### Error
 <p>
-    <img src="./images/get-all_2.png">
+    <img src="./images/Error.png">
 </p>
