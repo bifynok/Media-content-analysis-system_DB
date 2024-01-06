@@ -1,5 +1,4 @@
 const db = require('./database');
-const bodyParser = require('body-parser');
 
 //Methods for the "Roles"
 const getAllRoles = (req, res) => {
